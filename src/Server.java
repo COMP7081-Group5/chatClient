@@ -190,16 +190,20 @@ public class Server {
 		int id;
 		// the Username of the Client
 		String username;
+		// the password of the client
+		String password;
 		// the only type of message a will receive
 		ChatMessage cm;
 		// the date I connect
 		String date;
 
-		// Constructore
+		// Constructor
 		ClientThread(Socket socket) {
 			// a unique id
 			id = ++uniqueId;
 			this.socket = socket;
+			boolean loop = true;
+			int i = 0;
 			/* Creating both Data Stream */
 			System.out.println("Thread trying to create Object Input/Output Streams");
 			try
@@ -207,8 +211,34 @@ public class Server {
 				// create output first
 				sOutput = new ObjectOutputStream(socket.getOutputStream());
 				sInput  = new ObjectInputStream(socket.getInputStream());
-				// read the username
-				username = (String) sInput.readObject();
+				
+				System.out.println("User is logging in...");
+				
+				//allow user 5 login attempts
+				while(loop && i < 5){
+					// read the username and password
+					username = (String) sInput.readObject();
+					password = (String) sInput.readObject();
+
+					try{
+						Thread.sleep(1000);
+					}
+					catch(InterruptedException e){
+						display("Thread sleep exception: " + e);
+					}
+					if(!verifyUser(username, password)){
+						i++;
+						System.out.println("User not verified.");
+						boolean verify = false;
+						sOutput.writeObject(verify);
+						continue;
+					}
+					System.out.println("User verified.");
+					boolean verify = true;
+					sOutput.writeObject(verify);
+					loop = false;
+				}
+
 				display(username + " just connected.");
 			}
 			catch (IOException e) {
@@ -302,6 +332,13 @@ public class Server {
 				display("Error sending message to " + username);
 				display(e.toString());
 			}
+			return true;
+		}
+
+		private boolean verifyUser(String username, String password){
+			//check username and password against database
+			//sql check username
+			//for now just return true
 			return true;
 		}
 	}

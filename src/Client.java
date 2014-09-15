@@ -42,6 +42,85 @@ public class Client  {
 		this.cg = cg;
 	}
 	
+	//this function is not finished!!!!11
+	private boolean login(){
+		boolean verified = false;
+		// wait for messages from user
+		Scanner scan = new Scanner(System.in);
+		System.out.println("LOGIN: Enter your username and password.");
+		System.out.println("After 5 incorrect login attempts your connection will be terminated.");
+		//login to server, put this in it's own damn function
+		for(int i = 0; i < 5; i++){
+			System.out.println("Please enter your username (16 characters or less).");
+			
+			username = scan.nextLine();
+			//username is too long or empty
+			if(username.length() > 16 || username.length() == 0){
+				System.out.println("Invalid username, please try again.");
+				continue;
+			}
+			
+			System.out.println("Please enter your password (16 characters or less).");
+
+			password = scan.nextLine();
+			//password is too long or empty
+			if(username.length() > 16 || username.length() == 0){
+				System.out.println("Invalid password, please try again.");
+				continue;
+			}
+
+			System.out.println("Verifying login info...");
+			//create an output/input stream
+			try{
+				sOutput = new ObjectOutputStream(socket.getOutputStream());
+				sInput = new ObjectInputStream(socket.getInputStream());
+			}
+			catch(IOException eIO){
+				display("Exception creating new output/input stream: " + eIO);
+				//this.disconnect();
+				return false;
+			}
+			//send login information to server
+			try{
+				sOutput.writeObject(username);
+				sOutput.writeObject(password);
+			}
+			catch(IOException eIO){
+				display("Exception during login: " +eIO);
+				//this.disconnect();
+				return false;
+			}
+			//get response from server
+			try{
+				System.out.println("Getting login response...");
+				try{
+					verified = ((Boolean) sInput.readObject()).booleanValue();
+				}
+				catch(ClassNotFoundException e){
+					//asdf
+				}
+				System.out.println("Verified: " + verified);
+			}
+			catch(IOException eIO){
+				display("Exception reading login response: " + eIO);
+				//this.disconnect();
+				return false;
+			}
+			//if login info correct
+			if(verified == true){
+				System.out.println("Logged in!");
+				return true;
+			}
+			else{
+				System.out.println("Incorrect login information, please try again.");
+				continue;
+			}
+		}
+		System.out.println("You have used your 5 login attempts, program is now terminating.");
+		//this.disconnect();
+		return false;
+	}
+
 	/*
 	 * To start the dialog
 	 */
@@ -58,29 +137,11 @@ public class Client  {
 		
 		String msg = "Connection accepted " + socket.getInetAddress() + ":" + socket.getPort();
 		display(msg);
-	
-		/* Creating both Data Stream */
-		try
-		{
-			sInput  = new ObjectInputStream(socket.getInputStream());
-			sOutput = new ObjectOutputStream(socket.getOutputStream());
-		}
-		catch (IOException eIO) {
-			display("Exception creating new Input/output Streams: " + eIO);
-			return false;
-		}
-
+		System.out.println("Test");
 		// creates the Thread to listen from the server 
 		new ListenFromServer().start();
-		// Send our username to the server this is the only message that we
-		// will send as a String. All other messages will be ChatMessage objects
-		try
-		{
-			sOutput.writeObject(username);
-		}
-		catch (IOException eIO) {
-			display("Exception doing login : " + eIO);
-			disconnect();
+		//try to login
+		if(!login()){
 			return false;
 		}
 		// success we inform the caller that it worked
@@ -128,47 +189,8 @@ public class Client  {
 		catch(Exception e) {} // not much else I can do
 		
 		// inform the GUI
-		if(cg != null)
+		if(cg != null){
 			cg.connectionFailed();
-			
-	}
-
-	//this function is not finished!!!!11
-	private void login(){
-		// wait for messages from user
-		Scanner scan = new Scanner(System.in);
-		System.out.println("LOGIN: Enter your username and password.");
-		System.out.println("After 5 incorrect login attempts your connection will be terminated.");
-		//login to server, put this in it's own damn function
-		for(int i = 0; i < 5; i++){
-			System.out.println("Please enter your username (16 characters or less).");
-			username = scan.nextLine();
-			
-			//username is too long or empty
-			if(username.length() > 16 || username.length() == 0){
-				System.out.println("Invalid username, please try again.");
-				continue;
-			}
-			
-			System.out.println("Please enter your password (16 characters or less).");
-
-			//password is too long or empty
-			if(username.length() > 16 || username.length() == 0){
-				System.out.println("Invalid password, please try again.");
-				continue;
-			}
-
-			System.out.println("Verifying login info...");
-			//send login information to server
-			//if login info correct
-			/*if(verified){
-				end loop, move on to message loop
-			}
-			else{
-				login information was bad, continue to top of loop
-			}*/
-			System.out.println("You have used your 5 login attempts, program is now terminating.");
-			this.disconnect();
 		}
 	}
 
@@ -251,7 +273,7 @@ public class Client  {
 			return;
 		
 		//call login function
-		client.login();
+		//client.login();
 
 		//call message loop
 		client.messageLoop();
@@ -269,7 +291,17 @@ public class Client  {
 		public void run() {
 			while(true) {
 				try {
-					String msg = (String) sInput.readObject();
+					System.out.println("Test");
+					
+					String msg = "";
+					try{
+						msg = (String) sInput.readObject();
+					}
+					catch(NullPointerException e){
+						display("Null Pointer exception: " + e);
+						break;
+					}
+					
 					// if console mode print the message and add back the prompt
 					if(cg == null) {
 						System.out.println(msg);

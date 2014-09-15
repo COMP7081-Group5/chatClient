@@ -1,6 +1,7 @@
 import java.net.*;
 import java.io.*;
 import java.util.*;
+import com.google.gson.Gson;
 
 /*
  * The Client that can be run both as a console or a GUI
@@ -16,7 +17,7 @@ public class Client  {
 	private ClientGUI cg;
 	
 	// the server, the port and the username
-	private String server, username;
+	private String server, username, password;
 	private int port;
 
 	/*
@@ -25,19 +26,18 @@ public class Client  {
 	 *  port: the port number
 	 *  username: the username
 	 */
-	Client(String server, int port, String username) {
+	Client(String server, int port) {
 		// which calls the common constructor with the GUI set to null
-		this(server, port, username, null);
+		this(server, port, null);
 	}
 
 	/*
 	 * Constructor call when used from a GUI
 	 * in console mode the ClienGUI parameter is null
 	 */
-	Client(String server, int port, String username, ClientGUI cg) {
+	Client(String server, int port, ClientGUI cg) {
 		this.server = server;
 		this.port = port;
-		this.username = username;
 		// save if we are in GUI mode or not
 		this.cg = cg;
 	}
@@ -135,16 +135,15 @@ public class Client  {
 	/*
 	 * To start the Client in console mode use one of the following command
 	 * > java Client
-	 * > java Client username
-	 * > java Client username portNumber
-	 * > java Client username portNumber serverAddress
+	 * > java Client 
+	 * > java Client portNumber
+	 * > java Client portNumber serverAddress
 	 * at the console prompt
 	 * If the portNumber is not specified 1500 is used
 	 * If the serverAddress is not specified "localHost" is used
-	 * If the username is not specified "Anonymous" is used
 	 * > java Client 
 	 * is equivalent to
-	 * > java Client Anonymous 1500 localhost 
+	 * > java Client 1500 localhost 
 	 * are eqquivalent
 	 * 
 	 * In console mode, if an error occurs the program simply stops
@@ -155,35 +154,33 @@ public class Client  {
 		int portNumber = 1500;
 		String serverAddress = "localhost";
 		String userName = "Anonymous";
+		String passWord = "pass";
 
 		// depending of the number of arguments provided we fall through
 		switch(args.length) {
-			// > javac Client username portNumber serverAddr
-			case 3:
-				serverAddress = args[2];
-			// > javac Client username portNumber
+			// > javac Client portNumber serverAddr
 			case 2:
+				serverAddress = args[1];
+			// > javac Client portNumber
+			case 1:
 				try {
-					portNumber = Integer.parseInt(args[1]);
+					portNumber = Integer.parseInt(args[0]);
 				}
 				catch(Exception e) {
 					System.out.println("Invalid port number.");
-					System.out.println("Usage is: > java Client [username] [portNumber] [serverAddress]");
+					System.out.println("Usage is: > java Client [portNumber] [serverAddress]");
 					return;
 				}
-			// > javac Client username
-			case 1: 
-				userName = args[0];
 			// > java Client
 			case 0:
 				break;
 			// invalid number of arguments
 			default:
-				System.out.println("Usage is: > java Client [username] [portNumber] {serverAddress]");
+				System.out.println("Usage is: > java Client [portNumber] {serverAddress]");
 			return;
 		}
 		// create the Client object
-		Client client = new Client(serverAddress, portNumber, userName);
+		Client client = new Client(serverAddress, portNumber);
 		// test if we can start the connection to the Server
 		// if it failed nothing we can do
 		if(!client.start())
@@ -191,6 +188,40 @@ public class Client  {
 		
 		// wait for messages from user
 		Scanner scan = new Scanner(System.in);
+		System.out.println("LOGIN: Enter your username and password.");
+		System.out.println("After 5 incorrect login attempts your connection
+			will be terminated.")
+		//login to server, put this in it's own damn function
+		for(int i = 0; i < 5; i++){
+			System.out.println("Please enter your username (16 characters or less).");
+			username = scan.nextLine();
+			
+			//username is too long or empty
+			if(username.length() > 16 || username.length == 0){
+				System.out.println("Invalid username, please try again.")
+				continue;
+			}
+			
+			System.out.println("Please enter your password (16 characters or less).");
+
+			//password is too long or empty
+			if(username.length() > 16 || username.length == 0){
+				System.out.println("Invalid password, please try again.")
+				continue;
+			}
+
+			System.out.println("Verifying login info...")
+			//send login information to server
+			//if login info correct
+			/*if(verified){
+				end loop, move on to message loop
+			}
+			else{
+				login information was bad, continue to top of loop
+			}*/
+			System.out.println("You have used your 5 login attempts, program is now terminating.");
+			System.exit(0);
+		}
 		// loop forever for message from the user
 		while(true) {
 			System.out.print("> ");

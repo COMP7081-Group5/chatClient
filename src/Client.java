@@ -132,6 +132,70 @@ public class Client  {
 			cg.connectionFailed();
 			
 	}
+
+	//this function is not finished!!!!11
+	private void login(){
+		// wait for messages from user
+		Scanner scan = new Scanner(System.in);
+		System.out.println("LOGIN: Enter your username and password.");
+		System.out.println("After 5 incorrect login attempts your connection will be terminated.");
+		//login to server, put this in it's own damn function
+		for(int i = 0; i < 5; i++){
+			System.out.println("Please enter your username (16 characters or less).");
+			username = scan.nextLine();
+			
+			//username is too long or empty
+			if(username.length() > 16 || username.length() == 0){
+				System.out.println("Invalid username, please try again.");
+				continue;
+			}
+			
+			System.out.println("Please enter your password (16 characters or less).");
+
+			//password is too long or empty
+			if(username.length() > 16 || username.length() == 0){
+				System.out.println("Invalid password, please try again.");
+				continue;
+			}
+
+			System.out.println("Verifying login info...");
+			//send login information to server
+			//if login info correct
+			/*if(verified){
+				end loop, move on to message loop
+			}
+			else{
+				login information was bad, continue to top of loop
+			}*/
+			System.out.println("You have used your 5 login attempts, program is now terminating.");
+			this.disconnect();
+		}
+	}
+
+	private void messageLoop(){
+		// wait for messages from user
+		Scanner scan = new Scanner(System.in);
+		// loop forever for message from the user
+		while(true) {
+			System.out.print("> ");
+			// read message from user
+			String msg = scan.nextLine();
+			// logout if message is LOGOUT
+			if(msg.equalsIgnoreCase("LOGOUT")) {
+				this.sendMessage(new ChatMessage(ChatMessage.LOGOUT, ""));
+				// break to do the disconnect
+				break;
+			}
+			// message WhoIsIn
+			else if(msg.equalsIgnoreCase("WHOISIN")) {
+				this.sendMessage(new ChatMessage(ChatMessage.WHOISIN, ""));				
+			}
+			else {				// default to ordinary message
+				this.sendMessage(new ChatMessage(ChatMessage.MESSAGE, msg));
+			}
+		}
+	}
+
 	/*
 	 * To start the Client in console mode use one of the following command
 	 * > java Client
@@ -186,61 +250,12 @@ public class Client  {
 		if(!client.start())
 			return;
 		
-		// wait for messages from user
-		Scanner scan = new Scanner(System.in);
-		System.out.println("LOGIN: Enter your username and password.");
-		System.out.println("After 5 incorrect login attempts your connection
-			will be terminated.")
-		//login to server, put this in it's own damn function
-		for(int i = 0; i < 5; i++){
-			System.out.println("Please enter your username (16 characters or less).");
-			username = scan.nextLine();
-			
-			//username is too long or empty
-			if(username.length() > 16 || username.length == 0){
-				System.out.println("Invalid username, please try again.")
-				continue;
-			}
-			
-			System.out.println("Please enter your password (16 characters or less).");
+		//call login function
+		client.login();
 
-			//password is too long or empty
-			if(username.length() > 16 || username.length == 0){
-				System.out.println("Invalid password, please try again.")
-				continue;
-			}
+		//call message loop
+		client.messageLoop();
 
-			System.out.println("Verifying login info...")
-			//send login information to server
-			//if login info correct
-			/*if(verified){
-				end loop, move on to message loop
-			}
-			else{
-				login information was bad, continue to top of loop
-			}*/
-			System.out.println("You have used your 5 login attempts, program is now terminating.");
-			System.exit(0);
-		}
-		// loop forever for message from the user
-		while(true) {
-			System.out.print("> ");
-			// read message from user
-			String msg = scan.nextLine();
-			// logout if message is LOGOUT
-			if(msg.equalsIgnoreCase("LOGOUT")) {
-				client.sendMessage(new ChatMessage(ChatMessage.LOGOUT, ""));
-				// break to do the disconnect
-				break;
-			}
-			// message WhoIsIn
-			else if(msg.equalsIgnoreCase("WHOISIN")) {
-				client.sendMessage(new ChatMessage(ChatMessage.WHOISIN, ""));				
-			}
-			else {				// default to ordinary message
-				client.sendMessage(new ChatMessage(ChatMessage.MESSAGE, msg));
-			}
-		}
 		// done disconnect
 		client.disconnect();	
 	}

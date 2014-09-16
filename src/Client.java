@@ -1,7 +1,6 @@
 import java.net.*;
 import java.io.*;
 import java.util.*;
-import com.google.gson.Gson;
 
 /*
  * The Client that can be run both as a console or a GUI

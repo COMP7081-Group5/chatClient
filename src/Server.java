@@ -2,6 +2,9 @@ import java.io.*;
 import java.net.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException:
 
 /*
  * The server that can be run both as a console application or a GUI

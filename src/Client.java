@@ -272,7 +272,7 @@ public class Client  {
 			return;
 		
 		//call login function
-		//client.login();
+		client.login();
 
 		//call message loop
 		client.messageLoop();

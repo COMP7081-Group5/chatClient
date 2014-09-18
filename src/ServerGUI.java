@@ -1,6 +1,11 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /*
  * The server as a GUI
@@ -127,7 +132,11 @@ public class ServerGUI extends JFrame implements ActionListener, WindowListener 
 	 */
 	class ServerRunning extends Thread {
 		public void run() {
+			try { 
 			server.start();         // should execute until if fails
+			} catch (SQLException e){
+				System.out.println(e);
+			}
 			// the server failed
 			stopStart.setText("Start");
 			tPortNumber.setEditable(true);

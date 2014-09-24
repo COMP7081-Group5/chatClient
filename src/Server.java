@@ -1,4 +1,4 @@
-
+package src;
 import java.io.*;
 import java.net.*;
 import java.text.SimpleDateFormat;
@@ -133,7 +133,7 @@ public class Server {
      * For the GUI to stop the server
      */
 
-    protected void stop() {
+    public void stop() {
         keepGoing = false;
         // connect to myself as Client to exit statement 
         // Socket socket = serverSocket.accept();
@@ -249,6 +249,16 @@ public class Server {
         ChatMessage cm;
         // the date I connect
         String date;
+        
+        String rmUsername;
+        
+         // the New Username
+        String editUsername;
+        // the New user's password
+        String editUserPassword;
+        // the New user type
+        int editUserType;
+        
 
         // Constructor
         ClientThread(Socket socket) throws SQLException {
@@ -347,6 +357,28 @@ public class Server {
                         }
 
                         break;
+                     case ChatMessage.USERREMOVE:
+                        try {
+                            rmUser();
+                        } catch (SQLException ex) {
+                            System.out.println("rmUser() " + ex);
+                            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (IOException ex) {
+                            System.out.println("rmUser() " + ex);
+                            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+
+                        break;
+                         
+                     case ChatMessage.USEREDIT:
+                        try {
+                            editUser();
+                        } catch (SQLException | IOException ex) {
+                            System.out.println("editUser() " + ex);
+                            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+
+                        break;        
                 }
             }
             // remove myself from the arrayList containing the list of the
@@ -356,6 +388,7 @@ public class Server {
         }
 
         // try to close everything
+        @SuppressWarnings("empty-statement")
         private void close() {
             // try to close the connection
             try {
@@ -424,7 +457,77 @@ public class Server {
                 stmt.execute(storeQuery);
             }
         }
+        private void rmUser() throws SQLException, IOException{
+        
+            // create output first
+            sOutput = new ObjectOutputStream(socket.getOutputStream());
+            sInput = new ObjectInputStream(socket.getInputStream());
+            ResultSet rs = null;
 
+            try {
+                rmUsername = (String) sInput.readObject();
+            } catch (IOException ex) {
+                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            String query = "SELECT * FROM users WHERE username=";
+            query = query + "'" + rmUsername + "'";
+
+            rs = stmt.executeQuery(query);
+
+            if (rs.next()) {
+                // already username exist
+                sOutput.writeObject(true);
+                String storeQuery = "delete * from users WHERE username= " +rmUsername;
+                stmt.execute(storeQuery);
+                
+            } else {
+                // There is no user name
+                
+                sOutput.writeObject(false);
+                
+                
+            }
+            
+        }
+        
+        private void editUser() throws SQLException, IOException {
+            
+            // create output first
+            sOutput = new ObjectOutputStream(socket.getOutputStream());
+            sInput = new ObjectInputStream(socket.getInputStream());
+            ResultSet rs = null;
+
+            try {
+                editUsername = (String) sInput.readObject();
+                editUserPassword = (String) sInput.readObject();
+                editUserType = (int)sInput.readObject();
+            } catch (IOException ex) {
+                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            String query = "SELECT * FROM users WHERE username=";
+            query = query + "'" + editUsername + "'";
+
+            rs = stmt.executeQuery(query);
+
+            if (rs.next()) {
+                // already username exist
+                
+                String storeQuery = "update password ='editUserPassword'+type ='editUserType' users WHERE username='editUsername'";
+                stmt.execute(storeQuery);
+                sOutput.writeObject(true);
+                
+            } else {
+                
+                sOutput.writeObject(false);
+                
+            }
+        }
         /*
          * Write a String to the Client output stream
          */
@@ -445,6 +548,8 @@ public class Server {
             return true;
         }
 
+        
+        
         private boolean verifyUser(String username, String password) throws SQLException {
 
             // JDBC variables

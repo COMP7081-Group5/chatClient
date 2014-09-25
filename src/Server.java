@@ -485,17 +485,17 @@ public class Server {
             rs = stmt.executeQuery(query);
 
             if (rs.next()) {
-                // There is no user name
-                String verified = "false";
-                sOutput.writeObject(verified);
-                
-            } else {
                 String verified = "true";
                 sOutput.writeObject(verified);
                 String storeQuery = "DELETE FROM users WHERE username= ?";
                 pst = con.prepareStatement(storeQuery);
                 pst.setString(1, rmUsername);
                 pst.executeUpdate(); 
+                
+            } else {
+                // There is no user name
+                String verified = "false";
+                sOutput.writeObject(verified);
             }
             
         }
@@ -519,9 +519,6 @@ public class Server {
             rs = stmt.executeQuery(query);
 
             if (rs.next()) {
-                // already username exist
-                
-                //String storeQuery = "UPDATE users password ='editUserPassword'+type ='editUserType' users WHERE username='editUsername'";
                 String storeQuery = "UPDATE users SET password=?, usertype=? WHERE username=?";
                 pst = con.prepareStatement(storeQuery);
                 pst.setString(1, editUserPassword);

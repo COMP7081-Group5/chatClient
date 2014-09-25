@@ -2,8 +2,8 @@
 import java.net.*;
 import java.io.*;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+//import java.util.logging.Level;
+//import java.util.logging.Logger;
 
 /*
  * The Client that can be run both as a console or a GUI
@@ -24,6 +24,11 @@ public class Client {
 
     private String newUsername, newUserPassword; 
     private int newUserType;
+    private String rmUsername;
+    
+    private String editUsername, editUserPassword; 
+    private int editUserType;
+    
     /*
      *  Constructor called by console mode
      *  server: the server address
@@ -126,6 +131,146 @@ public class Client {
         }
         return false;
     }
+    
+    private boolean remove(){
+        
+        boolean verified = false;
+        boolean valid = false;
+        Scanner scan = new Scanner(System.in);
+    
+        while(!valid){
+            System.out.println("Please enter the user name that you want remove(16 characters or less).");
+            rmUsername=scan.nextLine();
+            
+            if (rmUsername.length() > 16 || rmUsername.length() == 0) {
+                System.out.println("Invalid username, please try again.");
+                return false;
+            }
+            
+            try {
+                sOutput = new ObjectOutputStream(socket.getOutputStream());
+                sInput = new ObjectInputStream(socket.getInputStream());
+            } catch (IOException eIO) {
+                display("Exception creating new output/input stream: " + eIO);
+                return false;
+            }
+
+            //send username to server
+            try {
+                sOutput.writeObject(newUsername);
+                
+            } catch (IOException eIO) {
+                display("Exception during login: " + eIO);
+                return false;
+            }
+            //get response from server
+            try {
+                System.out.println("Checking the username is in the database or not ...");
+                try {
+                    verified = ((Boolean) sInput.readObject()).booleanValue();
+                } catch (ClassNotFoundException e) {
+                    System.out.println(e + " ClassNotFoundException...");
+                }
+                System.out.println("Verified: " + verified);
+            } catch (IOException eIO) {
+                display("Exception reading login response: " + eIO);
+                return false;
+            }
+            //if username is in the database
+            if (verified != true) {
+                System.out.println("The user is removed.");
+                valid = true;
+            } else {
+                System.out.println("This user is NOT valid, please try again.");
+            }
+        }
+        return false;
+    
+        }
+
+     private boolean edit() {
+        boolean verified = false;
+        boolean valid = false;
+        Scanner scan = new Scanner(System.in);
+
+        while (!valid) {
+            // get a new username from admin
+            System.out.println("Enter a username (16 characters or less).");
+            editUsername = scan.nextLine();
+
+            // Validation
+            if (editUsername.length() > 16 || editUsername.length() == 0) {
+                System.out.println("Invalid username, please try again.");
+                return false;
+            }
+
+            System.out.println("Enter this user's new password (16 characters or less).");
+
+            editUserPassword = scan.nextLine();
+            //password is too long or empty
+            if (editUserPassword.length() > 16 || editUserPassword.length() == 0) {
+                System.out.println("Invalid password, please try again.");
+                return false;
+            }
+            
+            System.out.println("Enter this user's new type (0 = Scrum Master / 1 = Developer).");
+
+            editUserType = scan.nextInt();
+            
+            if (editUserType != 0 && editUserType != 1) {
+                System.out.println("Invalid Type, please try again.");
+                return false;
+            }
+            
+            
+            // check with the database if this user's information is changeed or not
+            System.out.println("Verifying this user's info...");
+            
+            //create an output/input stream
+            try {
+                sOutput = new ObjectOutputStream(socket.getOutputStream());
+                sInput = new ObjectInputStream(socket.getInputStream());
+            } catch (IOException eIO) {
+                display("Exception creating new output/input stream: " + eIO);
+                return false;
+            }
+
+            //send username to server
+            try {
+                sOutput.writeObject(editUsername);
+                sOutput.writeObject(editUserPassword);
+                sOutput.writeObject(editUserType);
+            } catch (IOException eIO) {
+                display("Exception during login: " + eIO);
+                return false;
+            }
+
+            //get response from server
+            try {
+                System.out.println("Checking the username is in the database or not ...");
+                try {
+                    verified = ((Boolean) sInput.readObject()).booleanValue();
+                } catch (ClassNotFoundException e) {
+                    System.out.println(e + " ClassNotFoundException...");
+                }
+                System.out.println("Verified: " + verified);
+            } catch (IOException eIO) {
+                display("Exception reading login response: " + eIO);
+                return false;
+            }
+            //if username is valid
+            if (verified == true) {
+                System.out.println("The user is edited.");
+              
+                valid = true;
+            } else {
+                System.out.println("This username is NOT valid, please try again.");
+            }
+        }
+        return false;
+    }  
+        
+    
 
     //this function is not finished!!!!11
     private boolean login() {
@@ -305,8 +450,27 @@ public class Client {
                     System.out.println("You are not allowed to add a user.\n "
                             + "Only \"admin\" can add a user.");
                 }
-
-            } else {
+            }
+            else if (msg.equalsIgnoreCase("USERREMOVE")) {
+                this.sendMessage(new ChatMessage(ChatMessage.USERREMOVE, ""));
+                if (username.equalsIgnoreCase("ADMIN")) {
+                    remove();
+                } else {
+                    System.out.println("You are not allowed to remove a user.\n "
+                            + "Only \"admin\" can remove a user.");
+                }
+            }
+            
+             else if (msg.equalsIgnoreCase("USEREDIT")) {
+                this.sendMessage(new ChatMessage(ChatMessage.USEREDIT, ""));
+                if (username.equalsIgnoreCase("ADMIN")) {
+                    edit();
+                } else {
+                    System.out.println("You are not allowed to remove a user.\n "
+                            + "Only \"admin\" can remove a user.");
+                }
+            }
+            else {
                 // default to ordinary message
                 this.sendMessage(new ChatMessage(ChatMessage.MESSAGE, msg));
             }

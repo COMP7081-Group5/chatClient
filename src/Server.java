@@ -1,4 +1,3 @@
-package src;
 import java.io.*;
 import java.net.*;
 import java.text.SimpleDateFormat;
@@ -8,6 +7,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.PreparedStatement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 /*
@@ -32,6 +32,7 @@ public class Server {
     // JDBC members
     private Connection con;
     private Statement stmt;
+    private PreparedStatement pst;
 
     private String usernm = null;
     private String passwd = null;
@@ -80,6 +81,8 @@ public class Server {
         // set stmt variable to execute SQL query
         try {
             stmt = con.createStatement();
+            //pst = con.prepareStatement
+
         } catch (Exception e) {
             System.out.println(e + "stmt con.createStatement");
         }
@@ -133,7 +136,7 @@ public class Server {
      * For the GUI to stop the server
      */
 
-    public void stop() {
+    protected void stop() {
         keepGoing = false;
         // connect to myself as Client to exit statement 
         // Socket socket = serverSocket.accept();
@@ -291,12 +294,18 @@ public class Server {
                         i++;
                         System.out.println("User not verified.");
                         boolean verify = false;
-                        sOutput.writeObject(verify);
+                        //sOutput.writeObject(verify);
+                        String verified = "false";
+                        sOutput.writeObject(verified);
+                        sOutput.flush();
                         continue;
                     }
                     System.out.println("User verified.");
                     boolean verify = true;
-                    sOutput.writeObject(verify);
+                    //sOutput.writeObject(verify);
+                    String verified = "true";
+                    sOutput.writeObject(verified);
+                    sOutput.flush();
                     loop = false;
                 }
 
@@ -425,8 +434,8 @@ public class Server {
         private void addUser() throws SQLException, IOException {
             
             // create output first
-            sOutput = new ObjectOutputStream(socket.getOutputStream());
-            sInput = new ObjectInputStream(socket.getInputStream());
+            //sOutput = new ObjectOutputStream(socket.getOutputStream());
+            //sInput = new ObjectInputStream(socket.getInputStream());
             ResultSet rs = null;
 
             try {
@@ -446,10 +455,12 @@ public class Server {
 
             if (rs.next()) {
                 // already username exist
-                sOutput.writeObject(false);
+                String verified = "false";
+                sOutput.writeObject(verified);
             } else {
                 // new username is valid
-                sOutput.writeObject(true);
+                String verified = "true";
+                sOutput.writeObject(verified);
                 // save new user data in database
                 String storeQuery = "INSERT INTO users VALUES('"
                         + newUsername + "', '" + newUserPassword + "', "
@@ -458,10 +469,6 @@ public class Server {
             }
         }
         private void rmUser() throws SQLException, IOException{
-        
-            // create output first
-            sOutput = new ObjectOutputStream(socket.getOutputStream());
-            sInput = new ObjectInputStream(socket.getInputStream());
             ResultSet rs = null;
 
             try {
@@ -471,33 +478,29 @@ public class Server {
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             }
-
+            System.out.println("" + rmUsername);
             String query = "SELECT * FROM users WHERE username=";
             query = query + "'" + rmUsername + "'";
 
             rs = stmt.executeQuery(query);
 
             if (rs.next()) {
-                // already username exist
-                sOutput.writeObject(true);
-                String storeQuery = "delete * from users WHERE username= " +rmUsername;
-                stmt.execute(storeQuery);
+                // There is no user name
+                String verified = "false";
+                sOutput.writeObject(verified);
                 
             } else {
-                // There is no user name
-                
-                sOutput.writeObject(false);
-                
-                
+                String verified = "true";
+                sOutput.writeObject(verified);
+                String storeQuery = "DELETE FROM users WHERE username= ?";
+                pst = con.prepareStatement(storeQuery);
+                pst.setString(1, rmUsername);
+                pst.executeUpdate(); 
             }
             
         }
         
         private void editUser() throws SQLException, IOException {
-            
-            // create output first
-            sOutput = new ObjectOutputStream(socket.getOutputStream());
-            sInput = new ObjectInputStream(socket.getInputStream());
             ResultSet rs = null;
 
             try {
@@ -518,14 +521,20 @@ public class Server {
             if (rs.next()) {
                 // already username exist
                 
-                String storeQuery = "update password ='editUserPassword'+type ='editUserType' users WHERE username='editUsername'";
-                stmt.execute(storeQuery);
-                sOutput.writeObject(true);
+                //String storeQuery = "UPDATE users password ='editUserPassword'+type ='editUserType' users WHERE username='editUsername'";
+                String storeQuery = "UPDATE users SET password=?, usertype=? WHERE username=?";
+                pst = con.prepareStatement(storeQuery);
+                pst.setString(1, editUserPassword);
+                pst.setInt(2, editUserType);
+                pst.setString(3, editUsername);
+                pst.executeUpdate();
+                //stmt.execute(storeQuery);
+                String verified = "true";
+                sOutput.writeObject(verified);
                 
             } else {
-                
-                sOutput.writeObject(false);
-                
+                String verified = "false";
+                sOutput.writeObject(verified);
             }
         }
         /*

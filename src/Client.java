@@ -1,4 +1,3 @@
-
 import java.net.*;
 import java.io.*;
 import java.util.*;
@@ -24,8 +23,7 @@ public class Client {
 
     private String newUsername, newUserPassword; 
     private int newUserType;
-    private String rmUsername;
-    
+    private String rmUsername;    
     private String editUsername, editUserPassword; 
     private int editUserType;
     
@@ -53,7 +51,7 @@ public class Client {
     }
 
     private boolean newUser() {
-        boolean verified = false;
+        String verified = "";
         boolean valid = false;
         Scanner scan = new Scanner(System.in);
 
@@ -84,18 +82,9 @@ public class Client {
                 System.out.println("Invalid Type, please try again.");
                 return false;
             }
-            
-            
+                        
             // check with the database if this new username is already taken or not
             System.out.println("Verifying new username info...");
-            //create an output/input stream
-            try {
-                sOutput = new ObjectOutputStream(socket.getOutputStream());
-                sInput = new ObjectInputStream(socket.getInputStream());
-            } catch (IOException eIO) {
-                display("Exception creating new output/input stream: " + eIO);
-                return false;
-            }
 
             //send new username to server
             try {
@@ -111,7 +100,7 @@ public class Client {
             try {
                 System.out.println("Checking the new username is valid or not ...");
                 try {
-                    verified = ((Boolean) sInput.readObject()).booleanValue();
+                    verified = (String) sInput.readObject();
                 } catch (ClassNotFoundException e) {
                     System.out.println(e + " ClassNotFoundException...");
                 }
@@ -121,7 +110,7 @@ public class Client {
                 return false;
             }
             //if new username is valid
-            if (verified == true) {
+            if (verified.equals("true")) {
                 System.out.println("The new user is created. \n"
                         + "username: " + newUsername + '\n');
                 valid = true;
@@ -132,9 +121,8 @@ public class Client {
         return false;
     }
     
-    private boolean remove(){
-        
-        boolean verified = false;
+    private boolean remove(){ 
+        String verified = "";
         boolean valid = false;
         Scanner scan = new Scanner(System.in);
     
@@ -146,20 +134,11 @@ public class Client {
                 System.out.println("Invalid username, please try again.");
                 return false;
             }
-            
-            try {
-                sOutput = new ObjectOutputStream(socket.getOutputStream());
-                sInput = new ObjectInputStream(socket.getInputStream());
-            } catch (IOException eIO) {
-                display("Exception creating new output/input stream: " + eIO);
-                return false;
-            }
-
             //send username to server
             try {
-                sOutput.writeObject(newUsername);
-                
-            } catch (IOException eIO) {
+                sOutput.writeObject(rmUsername);
+            } 
+            catch (IOException eIO) {
                 display("Exception during login: " + eIO);
                 return false;
             }
@@ -167,8 +146,9 @@ public class Client {
             try {
                 System.out.println("Checking the username is in the database or not ...");
                 try {
-                    verified = ((Boolean) sInput.readObject()).booleanValue();
-                } catch (ClassNotFoundException e) {
+                    verified = (String) sInput.readObject();
+                } 
+                catch (ClassNotFoundException e) {
                     System.out.println(e + " ClassNotFoundException...");
                 }
                 System.out.println("Verified: " + verified);
@@ -177,7 +157,7 @@ public class Client {
                 return false;
             }
             //if username is in the database
-            if (verified != true) {
+            if (verified.equals("true")) {
                 System.out.println("The user is removed.");
                 valid = true;
             } else {
@@ -185,11 +165,10 @@ public class Client {
             }
         }
         return false;
-    
-        }
+    }
 
-     private boolean edit() {
-        boolean verified = false;
+    private boolean edit(){
+        String verified = "";
         boolean valid = false;
         Scanner scan = new Scanner(System.in);
 
@@ -222,26 +201,17 @@ public class Client {
                 return false;
             }
             
-            
             // check with the database if this user's information is changeed or not
             System.out.println("Verifying this user's info...");
-            
-            //create an output/input stream
-            try {
-                sOutput = new ObjectOutputStream(socket.getOutputStream());
-                sInput = new ObjectInputStream(socket.getInputStream());
-            } catch (IOException eIO) {
-                display("Exception creating new output/input stream: " + eIO);
-                return false;
-            }
 
             //send username to server
             try {
                 sOutput.writeObject(editUsername);
                 sOutput.writeObject(editUserPassword);
                 sOutput.writeObject(editUserType);
-            } catch (IOException eIO) {
-                display("Exception during login: " + eIO);
+            } 
+            catch (IOException eIO) {
+                display("Exception during user edit: " + eIO);
                 return false;
             }
 
@@ -249,19 +219,18 @@ public class Client {
             try {
                 System.out.println("Checking the username is in the database or not ...");
                 try {
-                    verified = ((Boolean) sInput.readObject()).booleanValue();
+                    verified = (String) sInput.readObject();
                 } catch (ClassNotFoundException e) {
                     System.out.println(e + " ClassNotFoundException...");
                 }
                 System.out.println("Verified: " + verified);
             } catch (IOException eIO) {
-                display("Exception reading login response: " + eIO);
+                display("Exception reading edit response: " + eIO);
                 return false;
             }
             //if username is valid
-            if (verified == true) {
+            if (verified.equals("true")) {
                 System.out.println("The user is edited.");
-              
                 valid = true;
             } else {
                 System.out.println("This username is NOT valid, please try again.");
@@ -270,11 +239,9 @@ public class Client {
         return false;
     }  
         
-    
-
     //this function is not finished!!!!11
     private boolean login() {
-        boolean verified = false;
+        String verified = "";
         // wait for messages from user
         Scanner scan = new Scanner(System.in);
         System.out.println("LOGIN: Enter your username and password.");
@@ -300,15 +267,6 @@ public class Client {
             }
 
             System.out.println("Verifying login info...");
-            //create an output/input stream
-            try {
-                sOutput = new ObjectOutputStream(socket.getOutputStream());
-                sInput = new ObjectInputStream(socket.getInputStream());
-            } catch (IOException eIO) {
-                display("Exception creating new output/input stream: " + eIO);
-                //this.disconnect();
-                return false;
-            }
             //send login information to server
             try {
                 sOutput.writeObject(username);
@@ -322,8 +280,10 @@ public class Client {
             try {
                 System.out.println("Getting login response...");
                 try {
-                    verified = ((Boolean) sInput.readObject()).booleanValue();
-                } catch (ClassNotFoundException e) {
+                    verified = (String) sInput.readObject();
+                    System.out.println("" + verified);
+                } 
+                catch (ClassNotFoundException e) {
                     System.out.println(e + " ClassNotFoundException...");
                 }
                 System.out.println("Verified: " + verified);
@@ -333,7 +293,7 @@ public class Client {
                 return false;
             }
             //if login info correct
-            if (verified == true) {
+            if (verified.equals("true")) {
                 System.out.println("Logged in!");
                 return true;
             } else {
@@ -359,15 +319,24 @@ public class Client {
             return false;
         }
 
+        try {
+            sOutput = new ObjectOutputStream(socket.getOutputStream());
+            sInput = new ObjectInputStream(socket.getInputStream());
+        } catch (IOException eIO) {
+            display("Exception creating new output/input stream: " + eIO);
+            //this.disconnect();
+            return false;
+        }
+
         String msg = "Connection accepted " + socket.getInetAddress() + ":" + socket.getPort();
         display(msg);
         System.out.println("Test");
-        // creates the Thread to listen from the server 
-        new ListenFromServer().start();
         //try to login
         if (!login()) {
             return false;
         }
+        // creates the Thread to listen from the server 
+        //new ListenFromServer().start();
         // success we inform the caller that it worked
         return true;
     }

@@ -569,7 +569,7 @@ public class Server {
             // Compose SELECT query
             String query = "SELECT * FROM users WHERE username=";
             query = query + "'" + usernm + "'";
-            query = query + "and password='" + passwd + "'";
+            query = query + "AND password='" + passwd + "'";
 
             // execute SQL query
             rs = stmt.executeQuery(query);
@@ -587,6 +587,8 @@ public class Server {
                     return false;
                 }
 
+            } else {
+            	return false;
             }
 
             return true;

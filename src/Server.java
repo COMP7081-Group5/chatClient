@@ -302,7 +302,8 @@ public class Server {
                     }
                     System.out.println("User verified.");
                     boolean verify = true;
-                    //sOutput.writeObject(verify);
+                    //get there scrum team id here
+                    //save scrum team id in a variable for the CT object
                     String verified = "true";
                     sOutput.writeObject(verified);
                     sOutput.flush();
@@ -421,8 +422,8 @@ public class Server {
 
             // disconnect connection and statement
             try {
-                stmt.close();
-                con.close();
+                //stmt.close();
+                //con.close();
             } catch (Exception e) {
                 System.out.println("*******************Closing Failed******************");
             }
@@ -455,17 +456,15 @@ public class Server {
 
             if (rs.next()) {
                 // already username exist
-                String verified = "false";
-                sOutput.writeObject(verified);
+                writeMsg("FAILURE: Username already exists.");
             } else {
                 // new username is valid
-                String verified = "true";
-                sOutput.writeObject(verified);
                 // save new user data in database
                 String storeQuery = "INSERT INTO users VALUES('"
                         + newUsername + "', '" + newUserPassword + "', "
                         + newUserType +")";
                 stmt.execute(storeQuery);
+                writeMsg("SUCCESS: New user added.");
             }
         }
         private void rmUser() throws SQLException, IOException{
@@ -485,17 +484,15 @@ public class Server {
             rs = stmt.executeQuery(query);
 
             if (rs.next()) {
-                String verified = "true";
-                sOutput.writeObject(verified);
                 String storeQuery = "DELETE FROM users WHERE username= ?";
                 pst = con.prepareStatement(storeQuery);
                 pst.setString(1, rmUsername);
                 pst.executeUpdate(); 
+                writeMsg("SUCCESS: User removed.");
                 
             } else {
                 // There is no user name
-                String verified = "false";
-                sOutput.writeObject(verified);
+                writeMsg("FAILURE: The user you're trying to remove could not be found.");
             }
             
         }
@@ -525,13 +522,10 @@ public class Server {
                 pst.setInt(2, editUserType);
                 pst.setString(3, editUsername);
                 pst.executeUpdate();
-                //stmt.execute(storeQuery);
-                String verified = "true";
-                sOutput.writeObject(verified);
+                writeMsg("SUCCESS: User edited.");
                 
             } else {
-                String verified = "false";
-                sOutput.writeObject(verified);
+                writeMsg("FAILURE: User could not be edited, user may not exist.");
             }
         }
         /*

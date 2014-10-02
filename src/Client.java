@@ -97,8 +97,8 @@ public class Client {
             }
 
             //get response from server
+            System.out.println("Checking the new username is valid or not ...");
             try {
-                System.out.println("Checking the new username is valid or not ...");
                 try {
                     verified = (String) sInput.readObject();
                 } catch (ClassNotFoundException e) {
@@ -330,13 +330,12 @@ public class Client {
 
         String msg = "Connection accepted " + socket.getInetAddress() + ":" + socket.getPort();
         display(msg);
-        System.out.println("Test");
         //try to login
         if (!login()) {
             return false;
         }
         // creates the Thread to listen from the server 
-        //new ListenFromServer().start();
+        new ListenFromServer().start();
         // success we inform the caller that it worked
         return true;
     }
@@ -516,8 +515,6 @@ public class Client {
         public void run() {
             while (true) {
                 try {
-                    System.out.println("Test");
-
                     String msg = "";
                     try {
                         msg = (String) sInput.readObject();

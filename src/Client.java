@@ -412,31 +412,31 @@ public class Client {
             } // add user if message is USERADD
             else if (msg.equalsIgnoreCase("USERADD")) {
                 this.sendMessage(new ChatMessage(ChatMessage.USERADD, ""));
-                if (username.equalsIgnoreCase("ADMIN")) {
+                //if (username.equalsIgnoreCase("ADMIN")) {
                     newUser();
-                } else {
-                    System.out.println("You are not allowed to add a user.\n "
-                            + "Only \"admin\" can add a user.");
-                }
+                //} else {
+                  //  System.out.println("You are not allowed to add a user.\n "
+                    //        + "Only \"admin\" can add a user.");
+                //}
             }
             else if (msg.equalsIgnoreCase("USERREMOVE")) {
                 this.sendMessage(new ChatMessage(ChatMessage.USERREMOVE, ""));
-                if (username.equalsIgnoreCase("ADMIN")) {
+                //if (username.equalsIgnoreCase("ADMIN")) {
                     remove();
-                } else {
-                    System.out.println("You are not allowed to remove a user.\n "
-                            + "Only \"admin\" can remove a user.");
-                }
+                //} else {
+                  //  System.out.println("You are not allowed to remove a user.\n "
+                   //         + "Only \"admin\" can remove a user.");
+                //}
             }
             
              else if (msg.equalsIgnoreCase("USEREDIT")) {
                 this.sendMessage(new ChatMessage(ChatMessage.USEREDIT, ""));
-                if (username.equalsIgnoreCase("ADMIN")) {
+                //if (username.equalsIgnoreCase("ADMIN")) {
                     edit();
-                } else {
-                    System.out.println("You are not allowed to remove a user.\n "
-                            + "Only \"admin\" can remove a user.");
-                }
+                //} else {
+                  //  System.out.println("You are not allowed to remove a user.\n "
+                    //        + "Only \"admin\" can remove a user.");
+                //}
             }
             else {
                 // default to ordinary message

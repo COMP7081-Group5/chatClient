@@ -429,6 +429,25 @@ public class Server {
             }
         }
 
+        //method to get a users permissions (usertype)
+        //called when a user tries to add/edit/remove
+        private int getPermissions() throws SQLException, IOException {
+            ResultSet rs = null;
+
+            String query = "SELECT * FROM users WHERE username=";
+            query = query + "'" + username + "'";
+
+            rs = stmt.executeQuery(query);
+
+            if(rs.next()){
+                int permissions = rs.getInt("usertype");
+                return permissions;
+            } else {
+                writeMsg("FAILURE: could not get permissions for user.");
+                return -1;
+            }
+        }
+
         /*
          * Method to add user by admin
          */
@@ -447,6 +466,18 @@ public class Server {
                 Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            int permissions = getPermissions();
+            //if get permissions failed
+            if(permissions == -1){
+                return;
+            }
+
+            //if user is not scrum master or higher
+            if(permissions < 1){
+                writeMsg("FAILURE: You do not have permission to add a user.");
+                return;
             }
 
             String query = "SELECT * FROM users WHERE username=";
@@ -481,9 +512,26 @@ public class Server {
             String query = "SELECT * FROM users WHERE username=";
             query = query + "'" + rmUsername + "'";
 
+            int permissions = getPermissions();
+            if(permissions == -1){
+                return;
+            }
+
+            //if user is not scrum master or higher
+            if(permissions < 1){
+                writeMsg("FAILURE: You do not have permission to remove a user.");
+                return;
+            }
+
             rs = stmt.executeQuery(query);
 
             if (rs.next()) {
+                //get the permissions of the user we want to remove
+                int removePermissions = rs.getInt("usertype");
+                if(removePermissions >= permissions){
+                    writeMsg("FAILURE: You do not have remove this user.");
+                    return;
+                }
                 String storeQuery = "DELETE FROM users WHERE username= ?";
                 pst = con.prepareStatement(storeQuery);
                 pst.setString(1, rmUsername);
@@ -513,9 +561,26 @@ public class Server {
             String query = "SELECT * FROM users WHERE username=";
             query = query + "'" + editUsername + "'";
 
+            int permissions = getPermissions();
+            if(permissions == -1){
+                return;
+            }
+
+            //if user is not scrum master or higher
+            if(permissions < 1){
+                writeMsg("FAILURE: You do not have permission to remove a user.");
+                return;
+            }
+
             rs = stmt.executeQuery(query);
 
             if (rs.next()) {
+                //get the permissions of the user we want to edit
+                int removePermissions = rs.getInt("usertype");
+                if(removePermissions >= permissions){
+                    writeMsg("FAILURE: You do not have edit this user.");
+                    return;
+                }
                 String storeQuery = "UPDATE users SET password=?, usertype=? WHERE username=?";
                 pst = con.prepareStatement(storeQuery);
                 pst.setString(1, editUserPassword);

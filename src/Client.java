@@ -1,8 +1,6 @@
 import java.net.*;
 import java.io.*;
 import java.util.*;
-//import java.util.logging.Level;
-//import java.util.logging.Logger;
 
 /*
  * The Client that can be run both as a console or a GUI
@@ -273,7 +271,6 @@ public class Client {
                 sOutput.writeObject(password);
             } catch (IOException eIO) {
                 display("Exception during login: " + eIO);
-                //this.disconnect();
                 return false;
             }
             //get response from server

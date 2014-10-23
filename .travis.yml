@@ -5,5 +5,5 @@ jdk:
   - openjdk7
   - openjdk6
 branches:
-	only:
-		-master
+  only:
+    -master

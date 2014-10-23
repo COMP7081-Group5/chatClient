@@ -383,7 +383,7 @@ public class Server {
                      case ChatMessage.USEREDIT:
                         try {
                             editUser();
-                        } catch (IOException ex) {
+                        } catch (SQLException ex) {
                             System.out.println("editUser() " + ex);
                             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -465,7 +465,7 @@ public class Server {
             try {
                 newUsername = (String) sInput.readObject();
                 newUserPassword = (String) sInput.readObject();
-                newUserType = (int)sInput.readObject();
+                newUserType = (Integer)sInput.readObject();
             } catch (IOException ex) {
                 Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {
@@ -555,7 +555,7 @@ public class Server {
             try {
                 editUsername = (String) sInput.readObject();
                 editUserPassword = (String) sInput.readObject();
-                editUserType = (int)sInput.readObject();
+                editUserType = (Integer)sInput.readObject();
             } catch (IOException ex) {
                 Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {

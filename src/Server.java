@@ -383,7 +383,11 @@ public class Server {
                      case ChatMessage.USEREDIT:
                         try {
                             editUser();
-                        } catch (SQLException | IOException ex) {
+                        } catch (IOException ex) {
+                            System.out.println("editUser() " + ex);
+                            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        catch (IOException ex) {
                             System.out.println("editUser() " + ex);
                             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
                         }

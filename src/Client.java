@@ -8,8 +8,8 @@ import java.util.*;
 public class Client {
 
     // for I/O
-    private ObjectInputStream sInput;		// to read from the socket
-    private ObjectOutputStream sOutput;		// to write on the socket
+    private ObjectInputStream sInput;       // to read from the socket
+    private ObjectOutputStream sOutput;     // to write on the socket
     private Socket socket;
 
     // if I use a GUI or not
@@ -20,7 +20,7 @@ public class Client {
     private int port;
 
     private String newUsername, newUserPassword; 
-    private int newUserType;
+    private int newUserType, newUserTeamId;
     private String rmUsername;    
     private String editUsername, editUserPassword; 
     private int editUserType;
@@ -77,18 +77,36 @@ public class Client {
 
             newUserType = scan.nextInt();
             if (newUserType != 0 && newUserType != 1) {
-                System.out.println("Invalid Type, please try again.");
+                System.out.println("Invalid newUserType, please try again.");
                 return false;
             }
-                        
-            // check with the database if this new username is already taken or not
-            System.out.println("Verifying new username info...");
+            
+            System.out.println("Enter a new user's team id (choose from 1 to 9).");
 
+            newUserTeamId = scan.nextInt();
+            if (newUserTeamId <= 0 || newUserTeamId >= 10) {
+                System.out.println("Invalid newUserTeamId, please try again.");
+                return false;
+            }
+            
+            try {
+                sOutput.writeObject(newUsername);
+                sOutput.writeObject(newUserPassword);
+                sOutput.writeObject(newUserType);
+                sOutput.writeObject(newUserTeamId);
+                valid = true;
+            } catch (IOException eIO) {
+                display("Exception during login: " + eIO);
+                return false;
+            }
+
+            /*
             //send new username to server
             try {
                 sOutput.writeObject(newUsername);
                 sOutput.writeObject(newUserPassword);
                 sOutput.writeObject(newUserType);
+                sOutput.writeObject(newUserTeamId);
             } catch (IOException eIO) {
                 display("Exception during login: " + eIO);
                 return false;
@@ -96,17 +114,16 @@ public class Client {
 
             //get response from server
             System.out.println("Checking the new username is valid or not ...");
+       
             try {
-                try {
-                    verified = (String) sInput.readObject();
-                } catch (ClassNotFoundException e) {
-                    System.out.println(e + " ClassNotFoundException...");
-                }
-                System.out.println("Verified: " + verified);
-            } catch (IOException eIO) {
-                display("Exception reading login response: " + eIO);
-                return false;
+                verified = (String) sInput.readObject();
+            } catch (ClassNotFoundException e) {
+                System.out.println(e + " ClassNotFoundException: " + e);
+            } catch (IOException e) {
+                System.out.println(e + " IOException:" + e);
             }
+            System.out.println("Verified: " + verified);
+            
             //if new username is valid
             if (verified.equals("true")) {
                 System.out.println("The new user is created. \n"
@@ -115,7 +132,9 @@ public class Client {
             } else {
                 System.out.println("This username is NOT valid, please try again.");
             }
+            */
         }
+
         return false;
     }
     
@@ -344,7 +363,7 @@ public class Client {
         if (cg == null) {
             System.out.println(msg);      // println in console mode
         } else {
-            cg.append(msg + "\n");		// append to the ClientGUI JTextArea (or whatever)
+            cg.append(msg + "\n");      // append to the ClientGUI JTextArea (or whatever)
         }
     }
 

@@ -101,13 +101,13 @@ public class Server {
                 // format message saying we are waiting
                 display("Server waiting for Clients on port " + port + ".");
 
-                Socket socket = serverSocket.accept();  	// accept connection
+                Socket socket = serverSocket.accept();      // accept connection
                 // if I was asked to stop
                 if (!keepGoing) {
                     break;
                 }
                 ClientThread t = new ClientThread(socket);  // make a thread of it
-                al.add(t);									// save it in the ArrayList
+                al.add(t);                                  // save it in the ArrayList
                 t.start();
             }
             // I was asked to stop
@@ -248,6 +248,8 @@ public class Server {
         String newUserPassword;
         // the New user type
         int newUserType;
+        // the New user teamid
+        int newUserTeamId;
         // the only type of message a will receive
         ChatMessage cm;
         // the date I connect
@@ -466,6 +468,7 @@ public class Server {
                 newUsername = (String) sInput.readObject();
                 newUserPassword = (String) sInput.readObject();
                 newUserType = (Integer)sInput.readObject();
+                newUserTeamId = (Integer)sInput.readObject();
             } catch (IOException ex) {
                 Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {
@@ -488,16 +491,17 @@ public class Server {
             query = query + "'" + newUsername + "'";
 
             rs = stmt.executeQuery(query);
-
+            // check if the username already exists or not
             if (rs.next()) {
                 // already username exist
                 writeMsg("FAILURE: Username already exists.");
             } else {
                 // new username is valid
+                sOutput.writeObject("true");
                 // save new user data in database
                 String storeQuery = "INSERT INTO users VALUES('"
                         + newUsername + "', '" + newUserPassword + "', "
-                        + newUserType +")";
+                        + newUserType + ", " + newUserTeamId +")";
                 stmt.execute(storeQuery);
                 writeMsg("SUCCESS: New user added.");
             }
@@ -648,7 +652,7 @@ public class Server {
                 }
 
             } else {
-            	return false;
+                return false;
             }
 
             return true;

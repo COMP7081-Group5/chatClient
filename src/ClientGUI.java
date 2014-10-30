@@ -28,6 +28,10 @@ public class ClientGUI extends JFrame implements ActionListener {
 	private int defaultPort;
 	private String defaultHost;
 
+    private JLabel label2;
+    private JTextField tf2;
+
+
 	// Constructor connection receiving a socket number
 	ClientGUI(String host, int port) {
 
@@ -36,7 +40,7 @@ public class ClientGUI extends JFrame implements ActionListener {
 		defaultHost = host;
 		
 		// The NorthPanel with:
-		JPanel northPanel = new JPanel(new GridLayout(3,1));
+		JPanel northPanel = new JPanel(new GridLayout(4,1));
 		// the server name anmd the port number
 		JPanel serverAndPort = new JPanel(new GridLayout(1,5, 1, 3));
 		// the two JTextField with default value for server address and port number
@@ -59,6 +63,13 @@ public class ClientGUI extends JFrame implements ActionListener {
 		tf.setBackground(Color.WHITE);
 		northPanel.add(tf);
 		add(northPanel, BorderLayout.NORTH);
+
+        label2 = new JLabel("Enter your password below", SwingConstants.CENTER);
+        northPanel.add(label2);
+        tf2 = new JTextField("0");
+        tf2.setBackground(Color.WHITE);
+        northPanel.add(tf2);
+        add(northPanel, BorderLayout.NORTH);
 
 		// The CenterPanel which is the chat room
 		ta = new JTextArea("Welcome to the Chat room\n", 80, 80);

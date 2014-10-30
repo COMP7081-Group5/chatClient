@@ -162,7 +162,7 @@ public class Server {
      *  to broadcast a message to all Clients
      */
 
-    private synchronized void broadcast(String message) {
+    private synchronized void broadcast(String message, int team) {
         // add HH:mm:ss and \n to the message
         String time = sdf.format(new Date());
         String messageLf = time + " " + message + "\n";
@@ -176,6 +176,10 @@ public class Server {
         // because it has disconnected
         for (int i = al.size(); --i >= 0;) {
             ClientThread ct = al.get(i);
+            //if the clients team id is not equal to the team if of the sender
+            if(ct.teamID != team){
+                continue;
+            }
             // try to write to the Client if it fails remove it from the list
             if (!ct.writeMsg(messageLf)) {
                 al.remove(i);
@@ -242,6 +246,8 @@ public class Server {
         String username;
         // the password of the client
         String password;
+        //team id of the client
+        int teamID;
         // the New Username
         String newUsername;
         // the New user's password
@@ -292,13 +298,14 @@ public class Server {
                     } catch (InterruptedException e) {
                         display("Thread sleep exception: " + e);
                     }
-                    if (!verifyUser(username, password)) {
+                    int verified = verifyUser(username, password);
+                    if (verified == 0) {
                         i++;
                         System.out.println("User not verified.");
                         boolean verify = false;
                         //sOutput.writeObject(verify);
-                        String verified = "false";
-                        sOutput.writeObject(verified);
+                        String verifyMessage = "false";
+                        sOutput.writeObject(verifyMessage);
                         sOutput.flush();
                         continue;
                     }
@@ -306,8 +313,9 @@ public class Server {
                     boolean verify = true;
                     //get there scrum team id here
                     //save scrum team id in a variable for the CT object
-                    String verified = "true";
-                    sOutput.writeObject(verified);
+                    teamID = verified;
+                    String verifyMessage = "true";
+                    sOutput.writeObject(verifyMessage);
                     sOutput.flush();
                     loop = false;
                 }
@@ -343,7 +351,7 @@ public class Server {
                 // Switch on the type of message receive
                 switch (cm.getType()) {
                     case ChatMessage.MESSAGE:
-                        broadcast(username + ": " + message);
+                        broadcast(username + ": " + message, this.teamID);
                         break;
                     case ChatMessage.LOGOUT:
                         display(username + " disconnected with a LOGOUT message.");
@@ -621,9 +629,9 @@ public class Server {
             return true;
         }
 
-        
-        
-        private boolean verifyUser(String username, String password) throws SQLException {
+        //check to see if a clients login information is correct
+        //return 0 if false else return the team id
+        private int verifyUser(String username, String password) throws SQLException {
 
             // JDBC variables
             ResultSet rs = null;
@@ -642,20 +650,20 @@ public class Server {
                 //sql check username
                 if (!usernm.equals(rs.getString("username"))) {
                     System.out.println("Username is not matched");
-                    return false;
+                    return 0;
                 }
 
                 //sql check password
                 if (!passwd.equals(rs.getString("password"))) {
                     System.out.println("Password is not matched");
-                    return false;
+                    return 0;
                 }
 
             } else {
-                return false;
+                return 0;
             }
-
-            return true;
+            //return the user id
+            return rs.getInt("teamid");
         }
     }
 }

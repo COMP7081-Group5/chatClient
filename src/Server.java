@@ -299,7 +299,7 @@ public class Server {
                         display("Thread sleep exception: " + e);
                     }
                     int verified = verifyUser(username, password);
-                    if (verified == 0) {
+                    if (verified == -1) {
                         i++;
                         System.out.println("User not verified.");
                         boolean verify = false;
@@ -646,21 +646,24 @@ public class Server {
             // execute SQL query
             rs = stmt.executeQuery(query);
 
-            if (rs.next()) {
+            if(rs.next()) {
                 //sql check username
                 if (!usernm.equals(rs.getString("username"))) {
                     System.out.println("Username is not matched");
-                    return 0;
+                    return -1;
                 }
+                System.out.println("username passed");
 
                 //sql check password
                 if (!passwd.equals(rs.getString("password"))) {
                     System.out.println("Password is not matched");
-                    return 0;
+                    return -1;
                 }
+                System.out.println("password passed");
 
             } else {
-                return 0;
+                System.out.println("no match found");
+                return -1;
             }
             //return the user id
             return rs.getInt("teamid");

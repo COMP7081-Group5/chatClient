@@ -471,6 +471,7 @@ public class Server {
             //sOutput = new ObjectOutputStream(socket.getOutputStream());
             //sInput = new ObjectInputStream(socket.getInputStream());
             ResultSet rs = null;
+            ResultSet rss = null;
 
             try {
                 newUsername = (String) sInput.readObject();
@@ -504,6 +505,25 @@ public class Server {
                 // already username exist
                 writeMsg("FAILURE: Username already exists.");
             } else {
+
+                // check if newUserTeam has already scrum master or not
+                String q = "SELECT * FROM users WHERE teamid=" + newUserTeamId + " AND usertype=0";
+                rss = stmt.executeQuery(q);
+                // if there is, reject creating new user
+                if(rss.next()) {
+                    writeMsg("FAILURE: Scrum Master in the group already exists.");
+                } else {
+                    // else create the new user with scrum master
+                    // new username is valid
+                    sOutput.writeObject("true");
+                    // save new user data in database
+                    String storeQuery = "INSERT INTO users VALUES('"
+                            + newUsername + "', '" + newUserPassword + "', "
+                            + newUserType + ", " + newUserTeamId +")";
+                    stmt.execute(storeQuery);
+                    writeMsg("SUCCESS: New user added.");
+                }
+                /*
                 // new username is valid
                 sOutput.writeObject("true");
                 // save new user data in database
@@ -512,6 +532,7 @@ public class Server {
                         + newUserType + ", " + newUserTeamId +")";
                 stmt.execute(storeQuery);
                 writeMsg("SUCCESS: New user added.");
+                */
             }
         }
         private void rmUser() throws SQLException, IOException{

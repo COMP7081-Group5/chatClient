@@ -16,6 +16,7 @@ import static org.junit.Assert.*;
 /**
  *
  * @author callum
+ * none of the tests actually work
  */
 public class ServerTest {
     

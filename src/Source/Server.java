@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 
 public class Server {
 
-    // a unique ID for each connection
+    //a unique ID for each connection
     private static int uniqueId;
     // an ArrayList to keep the list of the Client
     private ArrayList<ClientThread> al;

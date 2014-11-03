@@ -1,3 +1,5 @@
+package Source;
+
 import java.io.*;
 import java.net.*;
 import java.text.SimpleDateFormat;
@@ -136,7 +138,7 @@ public class Server {
      * For the GUI to stop the server
      */
 
-    protected void stop() {
+    public void stop() {
         keepGoing = false;
         // connect to myself as Client to exit statement 
         // Socket socket = serverSocket.accept();
@@ -189,7 +191,7 @@ public class Server {
     }
 
     // for a client who logoff using the LOGOUT message
-    synchronized void remove(int id) {
+    public synchronized void remove(int id) {
         // scan the array list until we found the Id
         for (int i = 0; i < al.size(); ++i) {
             ClientThread ct = al.get(i);

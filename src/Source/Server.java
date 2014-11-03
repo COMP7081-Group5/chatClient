@@ -12,9 +12,8 @@ import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-/*
- * The server that can be run both as a console application or a GUI
- */
+
+//the server can be run as a CL or GUI application
 
 public class Server {
 

@@ -1,30 +1,18 @@
-#Java Chat Client
+[![Build Status](https://travis-ci.org/mplacona/java-junit-template-project.png?branch=master)](https://travis-ci.org/mplacona/java-junit-template-project)
 
-<img src="https://travis-ci.org/COMP7081-Group5/chatClient.svg?branch=master"/>
+# Java + Junit + Ant Template Project
+----------
+A Java template project pre configured with Junit and Ant.
+It comes integrated with Travis CI, so continuous integration comes out of the box
 
-A basic Java chat client used as a project for learning Agile Development.
+## Quick Start
+- Clone or download this repo
+- Run `ant` to get the unit tests going
 
-The base code used in this program can be found [here](http://www.dreamincode.net/forums/topic/259777-a-simple-chat-program-with-clientserver-gui-optional/).
+## Contribute
+Github is all about contributions. If you think you can collaborate or improve this, please make sure you send me a pull request
 
-##Usage
-
-Compiling: run the comp.sh script in the root directory of the project  
-
-Running the server: from /src execute the command java -cp ../lib/mysql-connector-j.jar:.Server  
-
-Running the lient: from the /src execute the command java Client  
-
-##Trello Board
-The Trello board for our project can be found [here](https://trello.com/b/r1ot3RKn/java-chat-program).  
-
-###List Usage
-- Backlog: for future sprint tasks and unplanned but 'nice to have'/non-value add tasks  
-- Sprint Sub Tasks: sub tasks of the current sprints main features  
-- Completed Sub Tasks: move cards from Sprint Sub Tasks here once completed **and** working  
-- Current Sprint (Major): the main tasks for the current sprint, such as 'Ability for admin to add users'  
-- Finished: at the end of each sprint move all completed cards from Completed Sub Tasks and Current Sprint here  
-
-###Cards
-- Cards for each task and sub task should be added to the appropriate list and assign the correct labels (not started, working, etc.)  
-- When you start work on a card be sure to assign your self to the card under Change Members, and update the labels as you work  
-- Add comments to cards if necessary  
+## License
+Copyright (c) 2013 [@marcos_placona](https://twitter.com/marcos_placona), [Marcos Placona](https://plus.google.com/111557456465418142877).  
+[Placona.co.uk](http://www.placona.co.uk)
+Licensed under the MIT license.

@@ -4,7 +4,7 @@
   <property location="src" name="src"/>
   <property location="build" name="build"/>
   <property location="dist" name="dist"/>
-  <property location="lib/junit.jar" name="junit"/>
+  <property location="lib/junit_4/junit-4.10.jar" name="junit"/>
   <path id="classpath.test">
     <pathelement location="${junit}"/>
     <pathelement location="${test}"/>

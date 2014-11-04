@@ -20,9 +20,9 @@
   <target name="jar" description="Netbeans default build target"/>
   <target depends="init" description="compile" name="compile">
     <javac destdir="${build}/main" srcdir="${src}" classpath="${junit}" />
-    <javac destdir="${build}/test" srcdir="${test}">
+    <javac destdir="${build}/test" srcdir="${test}" includeatruntime="false" >
       <classpath>
-        <pathelement location="${junit}"/>
+        <pathelement path="${junit}"/>
       </classpath>
     </javac>
   </target>

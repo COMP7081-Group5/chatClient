@@ -48,6 +48,9 @@ public class Client {
         this.cg = cg;
     }
 
+    //tries to send a new user to the server
+    //returns false if trying to add an invalid user
+    //else true
     private boolean newUser() {
         String verified = "";
         boolean valid = false;
@@ -99,45 +102,13 @@ public class Client {
                 display("Exception during login: " + eIO);
                 return false;
             }
-
-            /*
-            //send new username to server
-            try {
-                sOutput.writeObject(newUsername);
-                sOutput.writeObject(newUserPassword);
-                sOutput.writeObject(newUserType);
-                sOutput.writeObject(newUserTeamId);
-            } catch (IOException eIO) {
-                display("Exception during login: " + eIO);
-                return false;
-            }
-
-            //get response from server
-            System.out.println("Checking the new username is valid or not ...");
-       
-            try {
-                verified = (String) sInput.readObject();
-            } catch (ClassNotFoundException e) {
-                System.out.println(e + " ClassNotFoundException: " + e);
-            } catch (IOException e) {
-                System.out.println(e + " IOException:" + e);
-            }
-            System.out.println("Verified: " + verified);
-            
-            //if new username is valid
-            if (verified.equals("true")) {
-                System.out.println("The new user is created. \n"
-                        + "username: " + newUsername + '\n');
-                valid = true;
-            } else {
-                System.out.println("This username is NOT valid, please try again.");
-            }
-            */
         }
 
-        return false;
+        return true;
     }
     
+    //tries to remove a user
+    //why the fuck do none of our functions return anything other than false?
     private boolean remove(){ 
         String verified = "";
         boolean valid = false;
@@ -184,6 +155,8 @@ public class Client {
         return false;
     }
 
+    //tries to edit a user
+    //again, wtf are these return values?
     private boolean edit(){
         String verified = "";
         boolean valid = false;
@@ -257,6 +230,7 @@ public class Client {
     }  
         
     //this function is not finished!!!!11
+    //is this finished yet?
     private boolean login() {
         String verified = "";
         // wait for messages from user
@@ -428,21 +402,11 @@ public class Client {
             } // add user if message is USERADD
             else if (msg.equalsIgnoreCase("USERADD")) {
                 this.sendMessage(new ChatMessage(ChatMessage.USERADD, ""));
-                //if (username.equalsIgnoreCase("ADMIN")) {
                     newUser();
-                //} else {
-                  //  System.out.println("You are not allowed to add a user.\n "
-                    //        + "Only \"admin\" can add a user.");
-                //}
             }
             else if (msg.equalsIgnoreCase("USERREMOVE")) {
                 this.sendMessage(new ChatMessage(ChatMessage.USERREMOVE, ""));
-                //if (username.equalsIgnoreCase("ADMIN")) {
                     remove();
-                //} else {
-                  //  System.out.println("You are not allowed to remove a user.\n "
-                   //         + "Only \"admin\" can remove a user.");
-                //}
             }
             
              else if (msg.equalsIgnoreCase("USEREDIT")) {
@@ -460,6 +424,115 @@ public class Client {
             }
         }
     }
+
+    /**
+    *UNIT TEST VERSIONS OF CLASSES
+    */
+
+    //new user unit test version
+    //returns false if trying to add an invalid user
+    //else true
+    private boolean newUser(String name, String pass, int type, int id) {
+        String verified = "";
+        boolean valid = false;
+
+        newUsername = name;
+        newUserPassword = pass;
+        newUserType = type;
+        newUserTeamId = id;
+
+        while (!valid) {
+            // Validation
+            if (newUsername.length() > 16 || newUsername.length() == 0) {
+                System.out.println("Invalid new username, please try again.");
+                return false;
+            }
+            //password is too long or empty
+            if (newUserPassword.length() > 16 || newUserPassword.length() == 0) {
+                System.out.println("Invalid password, please try again.");
+                return false;
+            }
+            if (newUserType != 0 && newUserType != 1) {
+                System.out.println("Invalid newUserType, please try again.");
+                return false;
+            }
+            if (newUserTeamId <= 0 || newUserTeamId >= 10) {
+                System.out.println("Invalid newUserTeamId, please try again.");
+                return false;
+            }
+            valid = true;
+        }
+        return true;
+    }
+
+    //version of remove for unit tests
+    //what the fuck are these return values?
+    private boolean remove(String name, String simVerified){ 
+        String verified = "";
+        boolean valid = false;
+        Scanner scan = new Scanner(System.in);
+
+        rmUsername = name;
+        verified = simVerified;
+    
+        while(!valid){
+            if (rmUsername.length() > 16 || rmUsername.length() == 0) {
+                System.out.println("Invalid username, please try again.");
+                return false;
+            }
+            //if username is in the database
+            if (verified.equals("true")) {
+                System.out.println("The user is removed.");
+                valid = true;
+            } else {
+                System.out.println("This user is NOT valid, please try again.");
+            }
+        }
+        return false;
+    }
+
+    //version of edit for unit tests
+    //again, wtf are these return values?
+    private boolean edit(String name, String pass, int type, String simVerified){
+        String verified = "";
+        boolean valid = false;
+
+        editUsername = name;
+        editUserPassword = pass;
+        editUserType = type;
+        verified = simVerified;
+
+        while (!valid) {
+            // Validation
+            if (editUsername.length() > 16 || editUsername.length() == 0) {
+                System.out.println("Invalid username, please try again.");
+                return false;
+            }
+
+            //password is too long or empty
+            if (editUserPassword.length() > 16 || editUserPassword.length() == 0) {
+                System.out.println("Invalid password, please try again.");
+                return false;
+            }
+            
+            if (editUserType != 0 && editUserType != 1) {
+                System.out.println("Invalid Type, please try again.");
+                return false;
+            }
+            
+            // check with the database if this user's information is changeed or not
+            System.out.println("Verifying this user's info...");
+
+            //if username is valid
+            if (verified.equals("true")) {
+                System.out.println("The user is edited.");
+                valid = true;
+            } else {
+                System.out.println("This username is NOT valid, please try again.");
+            }
+        }
+        return false;
+    } 
 
     /*
      * To start the Client in console mode use one of the following command

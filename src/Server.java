@@ -444,6 +444,7 @@ public class Server {
 
         //method to get a users permissions (usertype)
         //called when a user tries to add/edit/remove
+        //returns the usertype
         private int getPermissions() throws SQLException, IOException {
             ResultSet rs = null;
 
@@ -465,10 +466,6 @@ public class Server {
          * Method to add user by admin
          */
         private void addUser() throws SQLException, IOException {
-            
-            // create output first
-            //sOutput = new ObjectOutputStream(socket.getOutputStream());
-            //sInput = new ObjectInputStream(socket.getInputStream());
             ResultSet rs = null;
             ResultSet rss = null;
 
@@ -522,16 +519,6 @@ public class Server {
                     stmt.execute(storeQuery);
                     writeMsg("SUCCESS: New user added.");
                 }
-                /*
-                // new username is valid
-                sOutput.writeObject("true");
-                // save new user data in database
-                String storeQuery = "INSERT INTO users VALUES('"
-                        + newUsername + "', '" + newUserPassword + "', "
-                        + newUserType + ", " + newUserTeamId +")";
-                stmt.execute(storeQuery);
-                writeMsg("SUCCESS: New user added.");
-                */
             }
         }
         private void rmUser() throws SQLException, IOException{

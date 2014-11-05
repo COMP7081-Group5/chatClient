@@ -10,6 +10,7 @@
   <path id="classpath.test">
     <pathelement location="lib/junit-4.11.jar" />
     <pathelement location="lib/hamcrest-core-1.3.jar" />
+    <pathelement location="lib/mysql-connector-j.jar" />
     <pathelement location="${main.build.dir}"/>
     <path refid="classpath.base" />
   </path>
@@ -34,7 +35,7 @@
   <!-- Test and build all files  -->
   <!-- To run this: use "ant" (default) or "ant run" -->
   <target name="run" depends="build">
-    <junit printsummary="on" haltonfailure="yes">
+    <junit printsummary="on" fork="true" haltonfailure="yes">
         <classpath>
           <path refid="classpath.test" />
           <pathelement location="${test.build.dir}"/>

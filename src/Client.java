@@ -411,12 +411,7 @@ public class Client {
             
              else if (msg.equalsIgnoreCase("USEREDIT")) {
                 this.sendMessage(new ChatMessage(ChatMessage.USEREDIT, ""));
-                //if (username.equalsIgnoreCase("ADMIN")) {
                     edit();
-                //} else {
-                  //  System.out.println("You are not allowed to remove a user.\n "
-                    //        + "Only \"admin\" can remove a user.");
-                //}
             }
             else {
                 // default to ordinary message
@@ -533,6 +528,37 @@ public class Client {
         }
         return false;
     } 
+
+    //version of login for unit testing
+    private boolean login(String name, String pass, String simVerified) {
+        String verified = "";
+        username = name;
+        password = pass;
+        verified = simVerified;
+        for (int i = 0; i < 5; i++) {
+            //username is too long or empty
+            if (username.length() > 16 || username.length() == 0) {
+                System.out.println("Invalid username, please try again.");
+                continue;
+            }
+            //password is too long or empty
+            if (password.length() > 16 || password.length() == 0) {
+                System.out.println("Invalid password, please try again.");
+                continue;
+            }
+            //if login info correct
+            if (verified.equals("true")) {
+                System.out.println("Logged in!");
+                return true;
+            } else {
+                System.out.println("Incorrect login information, please try again.");
+                continue;
+            }
+        }
+        System.out.println("You have used your 5 login attempts, program is now terminating.");
+        //this.disconnect();
+        return false;
+    }
 
     /*
      * To start the Client in console mode use one of the following command

@@ -455,6 +455,7 @@ public class Client {
                 System.out.println("Invalid newUserTeamId, please try again.");
                 return false;
             }
+            System.out.println("Valid input!");
             valid = true;
         }
         return true;
@@ -475,8 +476,9 @@ public class Client {
                 System.out.println("Invalid username, please try again.");
                 return false;
             }
+
             //if username is in the database
-            if (verified.equals("true")) {
+            if(verified.equals("true")) {
                 System.out.println("The user is removed.");
                 valid = true;
             } else {

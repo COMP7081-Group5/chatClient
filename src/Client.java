@@ -427,7 +427,7 @@ public class Client {
     //new user unit test version
     //returns false if trying to add an invalid user
     //else true
-    private boolean newUser(String name, String pass, int type, int id) {
+    public boolean newUser(String name, String pass, int type, int id) {
         String verified = "";
         boolean valid = false;
 
@@ -462,7 +462,7 @@ public class Client {
 
     //version of remove for unit tests
     //what the fuck are these return values?
-    private boolean remove(String name, String simVerified){ 
+    public boolean remove(String name, String simVerified){ 
         String verified = "";
         boolean valid = false;
         Scanner scan = new Scanner(System.in);
@@ -488,7 +488,7 @@ public class Client {
 
     //version of edit for unit tests
     //again, wtf are these return values?
-    private boolean edit(String name, String pass, int type, String simVerified){
+    public boolean edit(String name, String pass, int type, String simVerified){
         String verified = "";
         boolean valid = false;
 
@@ -530,7 +530,7 @@ public class Client {
     } 
 
     //version of login for unit testing
-    private boolean login(String name, String pass, String simVerified) {
+    public boolean login(String name, String pass, String simVerified) {
         String verified = "";
         username = name;
         password = pass;

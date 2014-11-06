@@ -53,7 +53,9 @@ public class ClientTest {
         System.out.println("TEST: Using Valid username, invalid Password");
         assertEquals("Username is not valid", false, c.newUser("Ben","",-1,-1));
 
-        
+        System.out.println("TEST: Using Valid username, Valid Password, Invalid usertype");
+        assertEquals("Username is not valid", false, c.newUser("Ben","BenPassword",-1,-1));
+
     }
 
 

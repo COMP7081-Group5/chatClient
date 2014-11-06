@@ -10,6 +10,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
 
 /**
  *
@@ -18,11 +20,14 @@ import static org.junit.Assert.*;
  */
 public class ServerTest {
     
+    public static Server s;
+
     public ServerTest() {
     }
     
     @BeforeClass
     public static void setUpClass() {
+        s = new Server(1500);
     }
     
     @AfterClass
@@ -42,5 +47,5 @@ public class ServerTest {
 
 		System.out.println("Inside testPrintMessage");
 	}
-    
+
 }

@@ -83,16 +83,16 @@ public class ClientTest {
 
         //why are these calling new user??
         System.out.println("TEST: Using invalid username");
-        assertEquals("Username is not valid", false, c.newUser("","",-1,-1));
+        assertEquals("Username is not valid", false, c.edit("","",-1,-1));
 
         System.out.println("TEST: Using Valid username, invalid Password");
-        assertEquals("Username is not valid", false, c.newUser("Ben","",-1,-1));
+        assertEquals("Username is not valid", false, c.edit("Ben","",-1,-1));
 
         System.out.println("TEST: Using Valid username, Valid Password, Invalid usertype");
-        assertEquals("Username is not valid", false, c.newUser("Ben","BenPassword",-1,-1));
+        assertEquals("Username is not valid", false, c.edit("Ben","BenPassword",-1,-1));
 
         System.out.println("TEST: Using Valid username, Valid Password, Valid usertype");
-        assertEquals("Username is not valid", true, c.newUser("Ben","BenPassword",0,7));
+        assertEquals("Username is not valid", true, c.edit("Ben","BenPassword",0,7));
 
         System.out.println("");
     }

@@ -23,7 +23,7 @@ public class Client {
     private int newUserType, newUserTeamId;
     private String rmUsername;    
     private String editUsername, editUserPassword; 
-    private int editUserType;
+    private int editUserType, editUserTeamID;
     
     /*
      *  Constructor called by console mode
@@ -190,7 +190,15 @@ public class Client {
                 System.out.println("Invalid Type, please try again.");
                 return false;
             }
+
+            System.out.println("Enter this user's team id (choose from 1 to 9).");
             
+            editUserTeamID = scan.nextInt();
+            if (editUserTeamID <= 0 || editUserTeamID >= 10) {
+                System.out.println("Invalid newUserTeamId, please try again.");
+                return false;
+            }
+
             // check with the database if this user's information is changeed or not
             System.out.println("Verifying this user's info...");
 
@@ -490,14 +498,15 @@ public class Client {
 
     //version of edit for unit tests
     //again, wtf are these return values?
-    public boolean edit(String name, String pass, int type, String simVerified){
+    public boolean edit(String name, String pass, int type, int id){
         String verified = "";
         boolean valid = false;
 
         editUsername = name;
         editUserPassword = pass;
         editUserType = type;
-        verified = simVerified;
+        editUserTeamID = id;
+        //verified = simVerified;
 
         while (!valid) {
             // Validation
@@ -517,9 +526,15 @@ public class Client {
                 return false;
             }
             
+            if (editUserTeamID <= 0 || editUserTeamID >= 10) {
+                System.out.println("Invalid newUserTeamId, please try again.");
+                return false;
+            }
+
             // check with the database if this user's information is changeed or not
             System.out.println("Verifying this user's info...");
 
+            /*
             //if username is valid
             if (verified.equals("true")) {
                 System.out.println("The user is edited.");
@@ -527,6 +542,8 @@ public class Client {
             } else {
                 System.out.println("This username is NOT valid, please try again.");
             }
+            */
+            return true;
         }
         return false;
     } 

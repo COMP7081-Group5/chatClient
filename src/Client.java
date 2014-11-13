@@ -552,11 +552,11 @@ public class Client {
     } 
 
     //version of login for unit testing
-    public boolean login(String name, String pass, String simVerified) {
+    public boolean login(String name, String pass) {
         String verified = "";
         username = name;
         password = pass;
-        verified = simVerified;
+        //verified = simVerified;
         for (int i = 0; i < 5; i++) {
             //username is too long or empty
             if (username.length() > 16 || username.length() == 0) {
@@ -568,6 +568,10 @@ public class Client {
                 System.out.println("Invalid password, please try again.");
                 continue;
             }
+
+            System.out.println("You've been successfully logged in!");
+            return true;
+            /*
             //if login info correct
             if (verified.equals("true")) {
                 System.out.println("Logged in!");
@@ -576,6 +580,7 @@ public class Client {
                 System.out.println("Incorrect login information, please try again.");
                 continue;
             }
+            */
         }
         System.out.println("You have used your 5 login attempts, program is now terminating.");
         //this.disconnect();

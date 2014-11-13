@@ -117,4 +117,27 @@ public class ClientTest {
         System.out.println("");
     }
 
+    @Test
+    public void testLogin() {
+        Client c = new Client("", 1500);
+
+        System.out.println("********TESTING INPUT VALIDATION FOR LOGIN********");
+
+
+        //why are these calling new user??
+        System.out.println("TEST: Using invalid username");
+        assertEquals("Username is not valid", false, c.login("",""));
+
+        System.out.println("TEST: Using invalid username");
+        assertEquals("Username is not valid", false, c.login("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa",""));
+
+        System.out.println("TEST: Using Valid username and Invalid password");
+        assertEquals("Username is not valid", false, c.login("ben",""));
+
+        System.out.println("TEST: Using Valid username and Valid password");
+        assertEquals("Username is not valid", true, c.login("ben", "ben"));
+
+        System.out.println("");
+    }
+
 }

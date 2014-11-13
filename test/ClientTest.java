@@ -96,4 +96,25 @@ public class ClientTest {
 
         System.out.println("");
     }
+
+    @Test
+    public void testRemove() {
+        Client c = new Client("", 1500);
+
+        System.out.println("********TESTING INPUT VALIDATION FOR REMOVE********");
+
+
+        //why are these calling new user??
+        System.out.println("TEST: Using invalid username");
+        assertEquals("Username is not valid", false, c.remove(""));
+
+        System.out.println("TEST: Using invalid username");
+        assertEquals("Username is not valid", false, c.remove("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa"));
+
+        System.out.println("TEST: Using Valid username");
+        assertEquals("Username is not valid", true, c.remove("ben"));
+
+        System.out.println("");
+    }
+
 }

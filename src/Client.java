@@ -471,20 +471,22 @@ public class Client {
 
     //version of remove for unit tests
     //what the fuck are these return values?
-    public boolean remove(String name, String simVerified){ 
+    public boolean remove(String name){ 
         String verified = "";
         boolean valid = false;
         Scanner scan = new Scanner(System.in);
 
         rmUsername = name;
-        verified = simVerified;
+        //verified = simVerified;
     
         while(!valid){
             if (rmUsername.length() > 16 || rmUsername.length() == 0) {
                 System.out.println("Invalid username, please try again.");
                 return false;
             }
-
+            System.out.println("Valid input!");
+            return true;
+            /*
             //if username is in the database
             if(verified.equals("true")) {
                 System.out.println("The user is removed.");
@@ -492,6 +494,7 @@ public class Client {
             } else {
                 System.out.println("This user is NOT valid, please try again.");
             }
+            */
         }
         return false;
     }
@@ -533,7 +536,7 @@ public class Client {
 
             // check with the database if this user's information is changeed or not
             System.out.println("Verifying this user's info...");
-
+            System.out.println("Valid input!");
             /*
             //if username is valid
             if (verified.equals("true")) {
